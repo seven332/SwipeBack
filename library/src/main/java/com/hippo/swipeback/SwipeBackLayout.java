@@ -43,10 +43,6 @@ public class SwipeBackLayout extends ViewGroup {
 
     public static final String LOG_TAG = SwipeBackLayout.class.getSimpleName();
 
-    private static final int[] WINDOW_ATTRS = new int[] {
-            android.R.attr.windowIsTranslucent
-    };
-
     private static final int[] SB_ATTRS = new int[] {
             R.attr.sb_windowBackground
     };
@@ -63,7 +59,6 @@ public class SwipeBackLayout extends ViewGroup {
     private Activity mActivity;
     private View mContentView;
     private ViewDragHelper mDragHelper;
-    private boolean mIsTranslucent;
 
     private int mEdgeFlag;
     private float mScrollThreshold = DEFAULT_SCROLL_THRESHOLD;
@@ -111,11 +106,6 @@ public class SwipeBackLayout extends ViewGroup {
     void attachToActivity(Activity activity) {
         mActivity = activity;
 
-        // final TypedArray a = activity.getTheme().obtainStyledAttributes(WINDOW_ATTRS);
-        // mIsTranslucent = a.getBoolean(0, false);
-        // a.recycle();
-        mIsTranslucent = true;
-
         // Remove DecorView background
         final ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
         decor.setBackgroundDrawable(null);
@@ -155,9 +145,6 @@ public class SwipeBackLayout extends ViewGroup {
             return;
         }
 
-        if (!mIsTranslucent) {
-            Utils.convertToTranslucent(mActivity);
-        }
         mDragHelper.smoothSlideViewTo(mContentView, left, 0);
         invalidate();
     }
@@ -448,17 +435,6 @@ public class SwipeBackLayout extends ViewGroup {
 
         @Override
         public void onViewDragStateChanged(int state) {
-            if (!mIsTranslucent) {
-                switch (state) {
-                    case ViewDragHelper.STATE_DRAGGING:
-                        Utils.convertToTranslucent(mActivity);
-                        break;
-                    case ViewDragHelper.STATE_IDLE:
-                        Utils.convertFromTranslucent(mActivity);
-                        break;
-                }
-            }
-
             // Callback
             if (mSwipeListeners != null && !mSwipeListeners.isEmpty()) {
                 for (SwipeListener listener : mSwipeListeners) {
