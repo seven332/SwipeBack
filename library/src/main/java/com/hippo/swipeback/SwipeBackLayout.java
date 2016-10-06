@@ -117,8 +117,15 @@ public class SwipeBackLayout extends ViewGroup {
         final ViewGroup decorChild = (ViewGroup) decor.getChildAt(0);
         decorChild.setBackgroundDrawable(background);
 
-        // Add this SwipeBackLayout between DecorView and its first child
+        // Add this SwipeBackLayout between DecorView and decorChild
         decor.removeView(decorChild);
+        // Set decorChild' LayoutParams to SwipeBackLayout
+        final ViewGroup.LayoutParams lp = decorChild.getLayoutParams();
+        if (lp != null) {
+            setLayoutParams(lp);
+        }
+        // Set default LayoutParams for decorChild
+        decorChild.setLayoutParams(generateDefaultLayoutParams());
         addView(decorChild);
         mContentView = decorChild;
         decor.addView(this);
@@ -229,16 +236,39 @@ public class SwipeBackLayout extends ViewGroup {
     }
 
     @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new MarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
+    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof MarginLayoutParams ? p : new MarginLayoutParams(p);
+    }
+
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof MarginLayoutParams && super.checkLayoutParams(p);
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        mContentView.measure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec));
+        final MarginLayoutParams lp = (MarginLayoutParams) mContentView.getLayoutParams();
+        final int widthPadding = getPaddingLeft() + getPaddingRight() + lp.leftMargin + lp.rightMargin;
+        final int heightPadding = getPaddingTop() + getPaddingBottom() + lp.topMargin + lp.bottomMargin;
+        mContentView.measure(getChildMeasureSpec(widthMeasureSpec, widthPadding, lp.width),
+                getChildMeasureSpec(heightMeasureSpec, heightPadding, lp.height));
+        setMeasuredDimension(resolveSize(mContentView.getMeasuredWidth() + widthPadding, widthMeasureSpec),
+                resolveSize(mContentView.getMeasuredHeight() + heightPadding, heightMeasureSpec));
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mContentView.layout(mContentLeft, mContentTop,
-                mContentLeft + mContentView.getMeasuredWidth(),
-                mContentTop + mContentView.getMeasuredHeight());
+        final MarginLayoutParams lp = (MarginLayoutParams) mContentView.getLayoutParams();
+        final int left = getPaddingLeft() + lp.leftMargin + mContentLeft;
+        final int top = getPaddingTop() + lp.topMargin + mContentTop;
+        mContentView.layout(left, top,
+                left + mContentView.getMeasuredWidth(),
+                top + mContentView.getMeasuredHeight());
     }
 
     private void drawShadow(Canvas canvas, View child) {
