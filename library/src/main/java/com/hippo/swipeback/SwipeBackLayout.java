@@ -265,9 +265,9 @@ public class SwipeBackLayout extends ViewGroup {
         final int alpha = (int) (baseAlpha * mScrimOpacity);
         final int color = alpha << 24 | (mScrimColor & 0xffffff);
 
-        if ((mTrackingEdge & EDGE_LEFT) != 0) {
+        if (mTrackingEdge == EDGE_LEFT) {
             canvas.clipRect(0, 0, child.getLeft(), getHeight());
-        } else if ((mTrackingEdge & EDGE_RIGHT) != 0) {
+        } else if (mTrackingEdge == EDGE_RIGHT) {
             canvas.clipRect(child.getRight(), 0, getRight(), getHeight());
         }
         canvas.drawColor(color);
@@ -364,11 +364,10 @@ public class SwipeBackLayout extends ViewGroup {
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
-            super.onViewPositionChanged(changedView, left, top, dx, dy);
-            if ((mTrackingEdge & EDGE_LEFT) != 0) {
+            if (mTrackingEdge == EDGE_LEFT) {
                 mScrollPercent = Math.abs((float) left
                         / (mContentView.getWidth() + mShadowLeft.getIntrinsicWidth()));
-            } else if ((mTrackingEdge & EDGE_RIGHT) != 0) {
+            } else if (mTrackingEdge == EDGE_RIGHT) {
                 mScrollPercent = Math.abs((float) left
                         / (mContentView.getWidth() + mShadowRight.getIntrinsicWidth()));
             }
@@ -404,16 +403,15 @@ public class SwipeBackLayout extends ViewGroup {
             }
         }
 
-
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             final int childWidth = releasedChild.getWidth();
 
             int left = 0;
-            if ((mTrackingEdge & EDGE_LEFT) != 0) {
+            if (mTrackingEdge == EDGE_LEFT) {
                 left = xvel > 0 || xvel == 0 && mScrollPercent > mScrollThreshold ? childWidth
                         + mShadowLeft.getIntrinsicWidth() + OVER_SCROLL_DISTANCE : 0;
-            } else if ((mTrackingEdge & EDGE_RIGHT) != 0) {
+            } else if (mTrackingEdge == EDGE_RIGHT) {
                 left = xvel < 0 || xvel == 0 && mScrollPercent > mScrollThreshold ? -(childWidth
                         + mShadowLeft.getIntrinsicWidth() + OVER_SCROLL_DISTANCE) : 0;
             }
