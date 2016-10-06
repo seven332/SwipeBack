@@ -28,7 +28,7 @@ import com.hippo.swipeback.SwipeBackActivityImpl;
 import com.hippo.swipeback.SwipeBackHelper;
 import com.hippo.swipeback.SwipeBackLayout;
 
-public class SwipeBackActivity extends AppCompatActivity implements SwipeBackActivityImpl {
+public abstract class SwipeBackActivity extends AppCompatActivity implements SwipeBackActivityImpl {
 
     private SwipeBackHelper mSwipeBackHelper;
 
