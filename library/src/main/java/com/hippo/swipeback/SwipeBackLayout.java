@@ -424,10 +424,21 @@ public class SwipeBackLayout extends ViewGroup {
 
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
+            int targetEdge = mTrackingEdge;
+            if (targetEdge == EDGE_NONE) {
+                // It is test for intercept touch event
+                // Try to get target edge
+                if ((mEdgeFlag & EDGE_LEFT) != 0 && mDragHelper.isEdgeTouched(EDGE_LEFT)) {
+                    targetEdge = EDGE_LEFT;
+                } else if ((mEdgeFlag & EDGE_RIGHT) != 0 && mDragHelper.isEdgeTouched(EDGE_RIGHT)) {
+                    targetEdge = EDGE_RIGHT;
+                }
+            }
+
             int ret = 0;
-            if ((mTrackingEdge & EDGE_LEFT) != 0) {
+            if (targetEdge == EDGE_LEFT) {
                 ret = Math.min(child.getWidth(), Math.max(left, 0));
-            } else if ((mTrackingEdge & EDGE_RIGHT) != 0) {
+            } else if (targetEdge == EDGE_RIGHT) {
                 ret = Math.min(0, Math.max(left, -child.getWidth()));
             }
             return ret;
@@ -440,6 +451,11 @@ public class SwipeBackLayout extends ViewGroup {
                 for (SwipeListener listener : mSwipeListeners) {
                     listener.onStateChange(mTrackingEdge, state);
                 }
+            }
+
+            if (state == ViewDragHelper.STATE_IDLE) {
+                // Reset mTrackingEdge
+                mTrackingEdge = EDGE_NONE;
             }
         }
     }
