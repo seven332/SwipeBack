@@ -20,9 +20,7 @@ package com.hippo.swipeback;
  * Created by Hippo on 10/5/2016.
  */
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -35,17 +33,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class SwipeBackLayout extends ViewGroup {
 
     public static final String LOG_TAG = SwipeBackLayout.class.getSimpleName();
-
-    private static final int[] SB_ATTRS = new int[] {
-            R.attr.sb_windowBackground
-    };
 
     public static final int EDGE_NONE = 0;
     public static final int EDGE_LEFT = ViewDragHelper.EDGE_LEFT;
@@ -56,7 +49,6 @@ public class SwipeBackLayout extends ViewGroup {
     private static final int DEFAULT_SCRIM_COLOR = 0x99000000;
     private static final int FULL_ALPHA = 255;
 
-    private Activity mActivity;
     private View mContentView;
     private ViewDragHelper mDragHelper;
 
@@ -103,32 +95,24 @@ public class SwipeBackLayout extends ViewGroup {
         mShadowRight = ContextCompat.getDrawable(context, R.drawable.sbl_shadow_right);
     }
 
-    void attachToActivity(Activity activity) {
-        mActivity = activity;
-
-        // Remove DecorView background
-        final ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
-        decor.setBackgroundDrawable(null);
-
-        // Set background for the first child of DecorView
-        final TypedArray a = activity.getTheme().obtainStyledAttributes(SB_ATTRS);
-        final Drawable background = a.getDrawable(0);
-        a.recycle();
-        final ViewGroup decorChild = (ViewGroup) decor.getChildAt(0);
-        decorChild.setBackgroundDrawable(background);
-
-        // Add this SwipeBackLayout between DecorView and decorChild
-        decor.removeView(decorChild);
-        // Set decorChild' LayoutParams to SwipeBackLayout
-        final ViewGroup.LayoutParams lp = decorChild.getLayoutParams();
-        if (lp != null) {
-            setLayoutParams(lp);
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        if (mContentView == null) {
+            mContentView = child;
         }
-        // Set default LayoutParams for decorChild
-        decorChild.setLayoutParams(generateDefaultLayoutParams());
-        addView(decorChild);
-        mContentView = decorChild;
-        decor.addView(this);
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        if (mContentView == child) {
+            if (getChildCount() > 0) {
+                mContentView = getChildAt(0);
+            } else {
+                mContentView = null;
+            }
+        }
     }
 
     /**
@@ -137,7 +121,7 @@ public class SwipeBackLayout extends ViewGroup {
      * {@code edge} must be one of {@link SwipeBackLayout#EDGE_LEFT}
      * and {@link SwipeBackLayout#EDGE_RIGHT}.
      */
-    public void swipeToFinishActivity(int edge) {
+    public void swipeToFinish(int edge) {
         final int childWidth = mContentView.getWidth();
 
         final int left;
@@ -425,10 +409,11 @@ public class SwipeBackLayout extends ViewGroup {
             }
 
             if (mScrollPercent >= 1) {
-                if (!mActivity.isFinishing()) {
-                    mActivity.finish();
-                    // Cancel finish animation
-                    mActivity.overridePendingTransition(0, 0);
+                // Callback
+                if (mSwipeListeners != null && !mSwipeListeners.isEmpty()) {
+                    for (SwipeListener listener : mSwipeListeners) {
+                        listener.onFinish();
+                    }
                 }
             }
         }
@@ -504,5 +489,10 @@ public class SwipeBackLayout extends ViewGroup {
          * Called when swipe percent over the threshold for the first time.
          */
         void onSwipeOverThreshold();
+
+        /**
+         * Called when the content view swiped to the end.
+         */
+        void onFinish();
     }
 }

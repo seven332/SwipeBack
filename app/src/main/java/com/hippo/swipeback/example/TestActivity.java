@@ -80,19 +80,22 @@ public class TestActivity extends SwipeBackActivity {
 
             @Override
             public void onSwipeOverThreshold() {}
+
+            @Override
+            public void onFinish() {}
         });
 
         findViewById(R.id.swipe_left).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSwipeBackLayout().swipeToFinishActivity(SwipeBackLayout.EDGE_LEFT);
+                getSwipeBackLayout().swipeToFinish(SwipeBackLayout.EDGE_LEFT);
             }
         });
 
         findViewById(R.id.swipe_right).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSwipeBackLayout().swipeToFinishActivity(SwipeBackLayout.EDGE_RIGHT);
+                getSwipeBackLayout().swipeToFinish(SwipeBackLayout.EDGE_RIGHT);
             }
         });
 

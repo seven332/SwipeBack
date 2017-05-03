@@ -23,12 +23,10 @@ package com.hippo.swipeback.example;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-
-import com.hippo.swipeback.SwipeBackActivityImpl;
 import com.hippo.swipeback.SwipeBackHelper;
 import com.hippo.swipeback.SwipeBackLayout;
 
-public abstract class SwipeBackActivity extends AppCompatActivity implements SwipeBackActivityImpl {
+public abstract class SwipeBackActivity extends AppCompatActivity {
 
     private SwipeBackHelper mSwipeBackHelper;
 
@@ -44,7 +42,6 @@ public abstract class SwipeBackActivity extends AppCompatActivity implements Swi
         mSwipeBackHelper.onPostCreate();
     }
 
-    @Override
     public SwipeBackLayout getSwipeBackLayout() {
         return mSwipeBackHelper.getSwipeBackLayout();
     }
