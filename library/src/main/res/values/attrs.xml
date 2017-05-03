@@ -17,7 +17,7 @@
 
 <resources>
 
-    <declare-styleable name="Theme">
+    <declare-styleable name="SB.Theme">
         <attr name="sb_windowBackground" format="reference"/>
     </declare-styleable>
 
