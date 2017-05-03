@@ -68,6 +68,7 @@ public class SwipeBackLayout extends ViewGroup {
     private float mScrimOpacity;
     private int mContentLeft;
     private int mContentTop;
+    private boolean mFinished;
 
     @Nullable
     private List<SwipeListener> mSwipeListeners;
@@ -138,6 +139,13 @@ public class SwipeBackLayout extends ViewGroup {
 
         mDragHelper.smoothSlideViewTo(mContentView, left, 0);
         invalidate();
+    }
+
+    /**
+     * Returns {@code true} if the content view swiped to the end.
+     */
+    public boolean isFinished() {
+        return mFinished;
     }
 
     /**
@@ -409,6 +417,7 @@ public class SwipeBackLayout extends ViewGroup {
             }
 
             if (mScrollPercent >= 1) {
+                mFinished = true;
                 // Callback
                 if (mSwipeListeners != null && !mSwipeListeners.isEmpty()) {
                     for (SwipeListener listener : mSwipeListeners) {
