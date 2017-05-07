@@ -39,7 +39,7 @@
             android:name=".TestActivity"
             android:theme="@style/AppTheme.Translucent"/>
 
+        <activity android:name=".ViewPagerActivity"/>
 
     </application>
-
 </manifest>

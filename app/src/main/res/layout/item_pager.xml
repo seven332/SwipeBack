@@ -15,24 +15,23 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout
+<FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical">
+  android:layout_height="match_parent">
 
-  <Button
-    android:id="@+id/test"
+  <com.hippo.swipeback.SwipeBackLayout
+    android:id="@+id/swipe_back"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:text="Test"/>
+    android:layout_height="match_parent">
 
-  <Button
-    android:id="@+id/pager"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:text="Pager"/>
+    <TextView
+      android:id="@+id/text"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      android:background="@color/colorAccent"/>
 
-</LinearLayout>
+  </com.hippo.swipeback.SwipeBackLayout>
+</FrameLayout>
