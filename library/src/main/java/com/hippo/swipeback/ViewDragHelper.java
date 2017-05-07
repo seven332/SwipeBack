@@ -36,7 +36,7 @@ import java.util.Arrays;
  * of useful operations and state tracking for allowing a user to drag and reposition
  * views within their parent ViewGroup.
  */
-public class ViewDragHelper {
+class ViewDragHelper {
   private static final String TAG = "ViewDragHelper";
 
   /**
