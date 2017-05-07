@@ -479,6 +479,12 @@ public class SwipeBackLayout extends ViewGroup {
                 // Reset mTrackingEdge
                 mTrackingEdge = EDGE_NONE;
             }
+
+            if (state == ViewDragHelper.STATE_DRAGGING) {
+                requestDisallowInterceptTouchEvent(true);
+            } else if (state == ViewDragHelper.STATE_IDLE) {
+                requestDisallowInterceptTouchEvent(false);
+            }
         }
     }
 
